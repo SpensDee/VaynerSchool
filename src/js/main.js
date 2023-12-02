@@ -1,114 +1,128 @@
-//quiz
-const quiz = {
-  questions: [
-    {
-      condition: "Заполните пропуски и ответьте на вопрос по тексту",
-      text: "If you match these criteria, contact your manager because you qualify for a salary (1)_____ :",
-      responses: [
-        {
-          text: "Upgrade",
-          correct: true,
-        },
-        {
-          text: "Grows",
-        },
-        {
-          text: "Raise",
-        },
-      ],
+if (typeof QUIZ_DB !== "undefined") {
+  const test = new Vue({
+    el: "#app",
+    data: () => {
+      return {
+        quiz: QUIZ_DB,
+        isEndOfTest: false,
+        groupIndex: 0,
+        questionIndex: 0,
+        userResponses: [],
+      };
     },
-    {
-      condition: "Condition 2",
-      text: "Question 2",
-      responses: [
-        {
-          text: "answer 1",
-        },
-        {
-          text: "answer 2",
-          correct: true,
-        },
-        {
-          text: "answer 3",
-        },
-      ],
+    created() {
+      this.quiz.groups.forEach((group, gIndex) => {
+        this.userResponses[gIndex] = {
+          groupName: group.name,
+          questions: [],
+        };
+        group.questions.forEach((element, qIndex) => {
+          let correctAnswer = element.responses.find((value) => {
+            return value.correct ? value.text : false;
+          });
+          this.userResponses[gIndex].questions[qIndex] = {
+            text: element.text,
+            correctAnswer: correctAnswer.text,
+            userAnswer: null,
+            isCorrect: false,
+          };
+        });
+      });
     },
-    {
-      condition: "Condition 3",
-      text: "Question 3",
-      responses: [
-        {
-          text: "answer 1",
-        },
-        {
-          text: "answer 2",
-        },
-        {
-          text: "Raise 3",
-          correct: true,
-        },
-      ],
+    methods: {
+      handleRadio(value, text) {
+        this.userResponses[this.groupIndex].questions[
+          this.questionIndex
+        ].isCorrect = value ? value : false;
+        this.userResponses[this.groupIndex].questions[
+          this.questionIndex
+        ].userAnswer = text;
+        let testDataElement = document.querySelector("#test-data");
+        if (!testDataElement) {
+          console.error("testDataElement with ID #test-data not found!");
+        }
+        testDataElement.value = JSON.stringify(this.userResponses);
+      },
+      next() {
+        let inputs = document.querySelectorAll(".b-test-content__variable");
+        inputs.forEach((el) => {
+          if (el.matches(":checked")) {
+            this.questionIndex++;
+          }
+        });
+        // last question detection
+        if (
+          this.userResponses[this.groupIndex].questions.length - 1 ===
+          this.questionIndex
+        ) {
+          //
+        }
+      },
+      nextGroup() {
+        // detect end of test
+        if (this.userResponses.length - 1 === this.groupIndex) {
+          this.isEndOfTest = true;
+        } else {
+          this.groupIndex++;
+          this.questionIndex = 0;
+        }
+      },
+      isLastGroupQuestion(gIndex) {
+        return (
+          this.userResponses[this.groupIndex].questions.length ===
+            this.questionIndex && gIndex === this.groupIndex
+        );
+      },
+      getQuestionCountInGroup(groupIndex) {
+        return this.userResponses[groupIndex].questions.length;
+      },
+      getCountOfRightAnswersInGroup(groupIndex) {
+        let cnt = 0;
+        this.userResponses[groupIndex].questions.forEach((question, index) => {
+          if (question.isCorrect) {
+            cnt++;
+          }
+        });
+        return cnt;
+      },
+      getCountOfRightAnswers() {
+        let cnt = 0;
+        this.userResponses.forEach((group, gIndex) => {
+          cnt += this.getCountOfRightAnswersInGroup(gIndex);
+        });
+        return cnt;
+      },
+      getCountOfAllQuestions() {
+        let cnt = 0;
+        this.userResponses.forEach((group, gIndex) => {
+          cnt += group.questions.length;
+        });
+        return cnt;
+      },
     },
-    {
-      condition: "Condition 4",
-      text: "Question 4",
-      responses: [
-        {
-          text: "answer 1",
-          correct: true,
-        },
-        {
-          text: "answer 2",
-        },
-        {
-          text: "answer 3",
-        },
-      ],
+    computed: {
+      currentValue() {
+        return (
+          Math.round(
+            (100 / this.quiz.groups[this.groupIndex].questions.length) *
+              this.questionIndex
+          ) + "%"
+        );
+      },
+      pageCounter() {
+        return (
+          this.questionIndex +
+          1 +
+          "/" +
+          this.quiz.groups[this.groupIndex].questions.length
+        );
+      },
+      showNextGroupBtn() {
+        return this.userResponses.length - 1 !== this.groupIndex;
+      },
     },
-    {
-      condition: "Condition 5",
-      text: "Question 5",
-      responses: [
-        {
-          text: "answer 15",
-          correct: true,
-        },
-        {
-          text: "answer 42",
-        },
-        {
-          text: "answer 38",
-        },
-      ],
-    },
-  ],
-};
-
-const test = new Vue({
-  el: "#app",
-  data: {
-    quiz: quiz,
-    questionIndex: 0,
-    userResponses: Array(quiz.questions.length).fill(false),
-    text: `А это значит, что вам есть куда стремится.
-        Осталось подтянуть совсем немного и вы освоите язык!`,
-  },
-  methods: {
-    handleRadio(value) {
-      this.userResponses[this.questionIndex] = value ? value : false;
-    },
-    next() {
-      this.questionIndex++;
-    },
-    score() {
-      return this.userResponses.filter((val) => val).length;
-    },
-  },
-});
-
-//disabled link
-document.querySelector(".b-menu__link_disabled").onclick = (e) =>
-  e.preventDefault();
+  });
+}
 
 //burger
 const burger = document.querySelector(".b-burger");
@@ -189,7 +203,7 @@ let createIframe = function (id) {
 };
 videos.forEach((el) => {
   let videoHref = el.getAttribute("data-video");
-  let deletedLength = "https://youtu.be/".length;
+  let deletedLength = "https://www.youtube.com/watch?v=".length;
   let videoId = videoHref.substring(deletedLength, videoHref.length);
   let img = el.querySelector("img");
   let youtubeImgSrc =
@@ -210,6 +224,7 @@ const modalOpen = document.querySelectorAll("[data-modal-open]");
 const modals = document.querySelectorAll("[data-modal]");
 const moadalInner = document.querySelectorAll(".b-modal");
 const closeModal = document.querySelectorAll("[data-modal-close]");
+
 function hideModals() {
   modals.forEach((elem) => {
     elem.classList.remove("b-show");
@@ -264,6 +279,11 @@ function closeVideo() {
 const swiper = new Swiper(".mySwiper", {
   spaceBetween: 100,
   effect: "fade",
+  centeredSlides: "true",
+  clickable: "false",
+  autoplay: {
+    delay: 5000,
+  },
   fadeEffect: {
     crossFade: true,
   },
@@ -286,27 +306,35 @@ const swiper = new Swiper(".mySwiper", {
   },
 });
 
-// const swiper = new Swiper(".mySwiper", {
-//     spaceBetween: 100,
-//     effect: "fade",
-//     fadeEffect: {
-//         crossFade: true,
-//     },
-//     pagination: {
-//         el: ".swiper-pagination",
-//         type: 'custom',
-//         renderCustom: function (swiper, current, total) {
-//             if (current < 10) {
-//                 total = '0' + total
-//             }
-//             if (total < 10) {
-//                 current = '0' + current
-//             }
-//             return current + ' ... ' + (total);
-//         }
-//     },
-//     navigation: {
-//         nextEl: ".swiper-button-next",
-//         prevEl: ".swiper-button-prev",
-//     },
-// });
+const slidesText = document.querySelectorAll(".b-slide-section__description");
+for (let i = 0; i < slidesText.length - 1; i++) {
+  const nextSlide = document.querySelector(".swiper-button-next");
+  const prevSlide = document.querySelector(".swiper-button-prev");
+  const slideSwape = document.querySelectorAll(".swiper-slide");
+  let currentSlide = 0;
+
+  const showSlide = () =>
+    (slidesText[currentSlide].style = "opacity: 1; display: flex;");
+  const hideSlide = () =>
+    (slidesText[currentSlide].style = "opacity: 0; display: none;");
+  const iterNext = () => currentSlide++;
+  const iterPrev = () => currentSlide--;
+  showSlide();
+
+  nextSlide.addEventListener("click", () => [
+    hideSlide(),
+    iterNext(),
+    showSlide(),
+  ]);
+  prevSlide.addEventListener("click", () => [
+    hideSlide(),
+    iterPrev(),
+    showSlide(),
+  ]);
+
+  swiper.on("transitionEnd", function () {
+    hideSlide();
+    currentSlide = swiper.realIndex;
+    showSlide();
+  });
+}
