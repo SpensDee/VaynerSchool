@@ -1,93 +1,94 @@
 .b-tile {
-    border: 4px solid #E8F6FC;
-    border-radius: var(--radius);
-    padding: get-vw(80px);
-    display: flex;
-    column-gap: 40px;
-    transition: all .4s;
+  border: 4px solid #e8f6fc;
+  border-radius: var(--radius);
+  padding: get-vw(80px);
+  display: flex;
+  column-gap: 40px;
+  transition: all 0.4s;
 
-    &:hover{
-        background-color: #fafafa;
-    }
+  &:hover {
+    background-color: #fafafa;
+  }
 
-    @media(max-width: 900px){
-        flex-direction: column;
-    }
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
 
-    @include xs(){
-        padding: 20px;
-    }
-<<<<<<< main
-=======
-    @media(min-width: 1920px) {
-        padding: 80px;
-    }
+  @include xs() {
+    padding: 20px;
+  }
+  @media (min-width: 1920px) {
+    padding: 80px;
+  }
 
-    @media(max-width: 360px){
-        padding: 25px;
-        padding-top: 30px;
-        padding-bottom: 30px;
-    }
->>>>>>> local
+  @media (max-width: 360px) {
+    padding: 25px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
 }
 
-.b-tile__col {}
+.b-tile__col {
+}
 
 .b-tile__col_left {
-    max-width: 390px;
-    flex: 1 1 auto;
+  max-width: 390px;
+  flex: 1 1 auto;
 }
 
 .b-tile__mark {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-.b-mark {}
+.b-mark {
+}
 
-.b-mark_unselect {}
+.b-mark_unselect {
+}
 
 .b-tile__title {
-    line-height: 1.2;
-    max-width: 90%;
-    margin-bottom: 40px;
-    text-align: initial;
-    transition: all .4s;
+  line-height: 1.2;
+  max-width: 90%;
+  margin-bottom: 40px;
+  text-align: initial;
+  transition: all 0.4s;
 }
 
 .b-tile__text {
-    font-weight: 400;
-    transition: all .4s;
+  font-weight: 400;
+  transition: all 0.4s;
 
-    @media(max-width: 900px){
-        margin-bottom: 30px;
-    }
+  @media (max-width: 900px) {
+    margin-bottom: 30px;
+  }
 }
 
-.b-tile__col-right {}
+.b-tile__col-right {
+}
 
 .b-tile__icon {
-    max-width: 200px;
-    max-height: 200px;
-    border-radius: var(--radius);
-    margin-bottom: 34px;
-    aspect-ratio: 1/1;
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: var(--radius);
+  margin-bottom: 34px;
+  aspect-ratio: 1/1;
 
-    @media(max-width: 360px){
-        display: none;
-    }
+  @media (max-width: 360px) {
+    display: none;
+  }
 }
 
 .b-tile__group,
 .b-tile__working {
-    font-size: 16px;
-    font-weight: 500;
-    transition: all .4s;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.4s;
 
-    @media(max-width: 360px){
-        margin-bottom: 0;
-    }
+  @media (max-width: 360px) {
+    margin-bottom: 0;
+  }
 }
 
 .b-tile__working {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
